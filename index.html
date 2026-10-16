@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Pecahan SD Kelas 5 – Pak. Vo </title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'cursive', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    keyframes: {
+                        bounceSoft: {
+                            '0%, 100%': { transform: 'translateY(-6px)' },
+                            '50%': { transform: 'translateY(4px)' }
+                        },
+                        popIn: {
+                            '0%': { transform: 'scale(0.88)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    },
+                    animation: {
+                        bounceSoft: 'bounceSoft 2.5s infinite ease-in-out',
+                        popIn: 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FFFBF0;
+            background-image: radial-gradient(#FFB74D 1.5px, transparent 1.5px), radial-gradient(#FFB74D 1.5px, #FFFBF0 1.5px);
+            background-size: 36px 36px;
+            background-position: 0 0, 18px 18px;
+        }
+        .title-font {
+            font-family: 'Fredoka', cursive;
+        }
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF3E0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FB8C00;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between p-2 sm:p-5 select-none relative overflow-x-hidden">
+
+    <!-- Confetti Overlay Canvas -->
+    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50 w-full h-full"></canvas>
+
+    <!-- App Header & Mascot Pak. Vo -->
+    <header class="max-w-5xl mx-auto w-full bg-white border-4 border-amber-400 rounded-3xl p-4 shadow-xl mb-4 relative overflow-hidden">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3 text-center md:text-left">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-amber-100 border-4 border-amber-300 rounded-2xl flex items-center justify-center text-4xl shadow-inner shrink-0 animate-bounceSoft">
+                    🦉
+                </div>
+                <div>
+                    <div class="inline-block px-3 py-0.5 bg-amber-100 text-amber-900 font-bold text-xs rounded-full mb-1 border border-amber-300">
+                        Matematika SD Kelas 5 • Operasi & Konversi Pecahan
+                    </div>
+                    <h1 class="text-xl sm:text-3xl font-extrabold text-amber-950 title-font tracking-wide">
+                        Petualangan Pecahan Cilik
+                    </h1>
+                    <p class="text-xs sm:text-sm text-slate-600 font-medium">
+                        Bersama Pak. Vo: Visualkan Pizza, Operasi KPK, & Resep Koki! 🍰🍕
+                    </p>
+                </div>
+            </div>
+
+            <!-- Audio Toggle & Mascot Status -->
+            <div class="flex items-center gap-2 bg-amber-50 px-4 py-2 rounded-2xl border-2 border-amber-200">
+                <button onclick="toggleAudio()" id="audio-btn" class="text-2xl hover:scale-110 transition cursor-pointer" title="Matikan/Hidupkan Suara">🔊</button>
+                <div class="text-left">
+                    <span class="block text-xs font-bold text-amber-900">Pak. Vo</span>
+                    <span id="mascot-status" class="text-[11px] text-amber-700 font-semibold">Siap Belajar!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-3 border-t-2 border-dashed border-amber-200">
+            <button onclick="switchTab('tab-simulator')" id="btn-tab-simulator" class="tab-btn py-2.5 px-3 rounded-2xl font-bold text-xs sm:text-sm title-font flex items-center justify-center gap-1.5 transition bg-amber-400 text-amber-950 shadow-md">
+                <span>🍕</span> Visual & Operasi
+            </button>
+            <button onclick="switchTab('tab-chef')" id="btn-tab-chef" class="tab-btn py-2.5 px-3 rounded-2xl font-bold text-xs sm:text-sm title-font flex items-center justify-center gap-1.5 transition bg-emerald-100 text-emerald-800 hover:bg-emerald-200">
+                <span>👨🍳</span> Misi Koki Pecahan
+            </button>
+            <button onclick="switchTab('tab-quiz')" id="btn-tab-quiz" class="tab-btn py-2.5 px-3 rounded-2xl font-bold text-xs sm:text-sm title-font flex items-center justify-center gap-1.5 transition bg-sky-100 text-sky-800 hover:bg-sky-200">
+                <span>🏆</span> Kuis Detektif
+            </button>
+            <button onclick="switchTab('tab-dictionary')" id="btn-tab-dictionary" class="tab-btn py-2.5 px-3 rounded-2xl font-bold text-xs sm:text-sm title-font flex items-center justify-center gap-1.5 transition bg-purple-100 text-purple-800 hover:bg-purple-200">
+                <span>📚</span> Kamus & Trik Cepat
+            </button>
+        </nav>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="max-w-5xl mx-auto w-full flex-grow">
+
+        <!-- ================= TAB 1: VISUAL & OPERASI PECAHAN ================= -->
+        <section id="tab-simulator" class="tab-content block space-y-6 animate-popIn">
+            
+            <div class="bg-white border-4 border-amber-300 rounded-3xl p-4 sm:p-6 shadow-xl space-y-6">
+                <!-- Mode Switcher (Single Fraction vs Addition/Subtraction) -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🍕</span>
+                        <div>
+                            <h2 class="text-lg font-bold text-amber-950 title-font">Simulator Visual & Operasi Hitung</h2>
+                            <p class="text-xs text-slate-600">Pilih mode eksplorasi pecahan tunggal atau penjumlahan/pengurangan beda penyebut!</p>
+                        </div>
+                    </div>
+
+                    <div class="flex bg-white p-1 rounded-xl border border-amber-300 gap-1">
+                        <button onclick="setSimMode('single')" id="mode-btn-single" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-amber-400 text-amber-950 shadow-xs">Pecahan Tunggal</button>
+                        <button onclick="setSimMode('operation')" id="mode-btn-operation" class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:bg-amber-100">Penjumlahan & Pengurangan</button>
+                    </div>
+                </div>
+
+                <!-- SINGLE FRACTION MODE PANEL -->
+                <div id="single-fraction-panel" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    <!-- Controls Column (5 cols) -->
+                    <div class="lg:col-span-5 bg-amber-50 p-4 sm:p-5 rounded-2xl border-2 border-amber-200 space-y-4">
+                        <div class="flex items-center justify-between border-b border-amber-200 pb-2">
+                            <span class="font-bold text-base text-amber-950 title-font">Pengaturan Pecahan</span>
+                            <span id="fraction-type-badge" class="text-[10px] bg-amber-200 text-amber-900 font-extrabold px-2 py-0.5 rounded-md">Pecahan Biasa</span>
+                        </div>
+
+                        <!-- Visual Shape Type Selector -->
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-amber-900 block">Bentuk Visualisasi:</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="setVisualShape('pizza')" id="shape-btn-pizza" class="py-2 px-3 rounded-xl border-2 font-bold text-xs flex items-center justify-center gap-1 bg-amber-400 border-amber-500 text-amber-950">🍕 Pizza Lingkaran</button>
+                                <button onclick="setVisualShape('bar')" id="shape-btn-bar" class="py-2 px-3 rounded-xl border-2 font-bold text-xs flex items-center justify-center gap-1 bg-white border-slate-200 text-slate-700">🍫 Batang Cokelat</button>
+                            </div>
+                        </div>
+
+                        <!-- Numerator (Pembilang) Slider -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs font-bold text-amber-900">
+                                <label>Pembilang (Bagian atas / Diarsir):</label>
+                                <span id="val-display-num" class="px-2 py-0.5 bg-amber-300 text-amber-950 font-black rounded-md text-xs">3</span>
+                            </div>
+                            <input type="range" id="input-num" min="1" max="16" value="3" oninput="onSingleSliderChange()" class="w-full accent-amber-600 h-2 bg-amber-200 rounded-lg cursor-pointer">
+                        </div>
+
+                        <!-- Denominator (Penyebut) Slider -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs font-bold text-amber-900">
+                                <label>Penyebut (Bagian bawah / Total Potongan):</label>
+                                <span id="val-display-den" class="px-2 py-0.5 bg-amber-300 text-amber-950 font-black rounded-md text-xs">4</span>
+                            </div>
+                            <input type="range" id="input-den" min="1" max="16" value="4" oninput="onSingleSliderChange()" class="w-full accent-amber-600 h-2 bg-amber-200 rounded-lg cursor-pointer">
+                        </div>
+
+                        <!-- Pak. Vo Tip Box -->
+                        <div class="bg-white p-3 rounded-xl border border-amber-200 text-xs text-slate-700 flex items-start gap-2 shadow-xs">
+                            <span class="text-2xl shrink-0">🦉</span>
+                            <div>
+                                <span class="font-bold text-amber-900 block">Tips Pak. Vo:</span>
+                                <p id="single-tip-text" class="leading-snug text-slate-600">
+                                    Pembilang (atas) adalah banyaknya bagian yang diambil, sedangkan Penyebut (bawah) adalah total semua bagian yang sama rata!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual & Calculations Column (7 cols) -->
+                    <div class="lg:col-span-7 space-y-4">
+                        
+                        <!-- SVG Display Container -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col items-center justify-center relative min-h-[240px]">
+                            <span class="absolute top-3 left-3 text-[11px] font-bold text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                                Visual Pecahan Real-Time
+                            </span>
+                            <div id="single-svg-wrapper" class="w-full h-56 flex items-center justify-center">
+                                <!-- Dynamic SVG rendered here -->
+                            </div>
+                        </div>
+
+                        <!-- Fraction Conversions & Analysis -->
+                        <div class="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl border-2 border-slate-800 space-y-3 shadow-md">
+                            <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                                <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                                    <span>📊</span> Analisis & Bentuk Konversi Pecahan
+                                </span>
+                                <span class="text-[10px] text-slate-400">Otomatis Terhitung</span>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                                <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700">
+                                    <span class="text-[10px] text-slate-400 block font-bold">Pecahan Campuran</span>
+                                    <span id="calc-mixed" class="text-sm font-black text-amber-300">0 3/4</span>
+                                </div>
+                                <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700">
+                                    <span class="text-[10px] text-slate-400 block font-bold">Bentuk Sederhana</span>
+                                    <span id="calc-simplified" class="text-sm font-black text-emerald-400">3/4</span>
+                                </div>
+                                <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700">
+                                    <span class="text-[10px] text-slate-400 block font-bold">Desimal</span>
+                                    <span id="calc-decimal" class="text-sm font-black text-sky-300">0.75</span>
+                                </div>
+                                <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700">
+                                    <span class="text-[10px] text-slate-400 block font-bold">Persen (%)</span>
+                                    <span id="calc-percent" class="text-sm font-black text-purple-300">75%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- FRACTION OPERATION PANEL (HIDDEN BY DEFAULT) -->
+                <div id="operation-fraction-panel" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
+                        
+                        <!-- Fraction 1 Inputs -->
+                        <div class="bg-white p-3.5 rounded-xl border border-amber-200 space-y-2">
+                            <span class="font-bold text-xs text-amber-900 block border-b pb-1">Pecahan Pertama (A):</span>
+                            <div class="flex items-center gap-3">
+                                <div class="flex flex-col gap-1 w-24">
+                                    <input type="number" id="op-num1" min="1" max="12" value="1" oninput="renderOperation()" class="p-1.5 border-2 border-amber-300 rounded-lg text-center font-bold text-amber-950">
+                                    <div class="h-1 bg-amber-500 rounded-full"></div>
+                                    <input type="number" id="op-den1" min="1" max="12" value="2" oninput="renderOperation()" class="p-1.5 border-2 border-amber-300 rounded-lg text-center font-bold text-amber-950">
+                                </div>
+                                <div class="text-xs text-slate-600">
+                                    <span>Pembilang: <b id="op-n1-val">1</b></span><br>
+                                    <span>Penyebut: <b id="op-d1-val">2</b></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Operator Choice & Fraction 2 Inputs -->
+                        <div class="bg-white p-3.5 rounded-xl border border-amber-200 space-y-2">
+                            <div class="flex justify-between items-center border-b pb-1">
+                                <span class="font-bold text-xs text-amber-900">Operasi & Pecahan Kedua (B):</span>
+                                <select id="op-type" onchange="renderOperation()" class="bg-amber-100 text-amber-950 font-bold text-xs px-2 py-0.5 rounded-md border border-amber-300 cursor-pointer">
+                                    <option value="+">Tambah (+)</option>
+                                    <option value="-">Kurang (-)</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex flex-col gap-1 w-24">
+                                    <input type="number" id="op-num2" min="1" max="12" value="1" oninput="renderOperation()" class="p-1.5 border-2 border-amber-300 rounded-lg text-center font-bold text-amber-950">
+                                    <div class="h-1 bg-amber-500 rounded-full"></div>
+                                    <input type="number" id="op-den2" min="1" max="12" value="3" oninput="renderOperation()" class="p-1.5 border-2 border-amber-300 rounded-lg text-center font-bold text-amber-950">
+                                </div>
+                                <div class="text-xs text-slate-600">
+                                    <span>Pembilang: <b id="op-n2-val">1</b></span><br>
+                                    <span>Penyebut: <b id="op-d2-val">3</b></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Step by Step KPK Operation Calculation Box -->
+                    <div class="bg-slate-900 text-white p-5 rounded-2xl border-2 border-slate-800 space-y-3 shadow-md">
+                        <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                                <span>🧮</span> Langkah Penyelesaian KPK Penyebut (Kelas 5 SD)
+                            </span>
+                            <span class="text-[10px] text-slate-400">Penyama Penyebut Otomatis</span>
+                        </div>
+
+                        <div id="operation-steps-box" class="space-y-3 text-xs sm:text-sm font-mono leading-relaxed">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: MISI KOKI PECAHAN ================= -->
+        <section id="tab-chef" class="tab-content hidden space-y-6 animate-popIn">
+            <div class="bg-white border-4 border-emerald-300 rounded-3xl p-4 sm:p-6 shadow-xl space-y-6">
+                <!-- Header Stats Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-3 bg-emerald-50 p-4 rounded-2xl border-2 border-emerald-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-emerald-400 text-white rounded-2xl flex items-center justify-center text-2xl font-bold shadow-md">
+                            👨🍳
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-emerald-950 title-font">Dapur Koki Pecahan Pak. Vo</h2>
+                            <p class="text-xs text-slate-600">Bantu Pak. Vo meracik pizza, cokelat, dan adonan kue sesuai resep!</p>
+                        </div>
+                    </div>
+
+                    <!-- Stats Badges -->
+                    <div class="flex items-center gap-4 bg-white px-4 py-2 rounded-xl border border-emerald-200 shadow-xs">
+                        <div class="text-center">
+                            <span class="text-[10px] font-bold text-slate-400 block uppercase">Topi Koki</span>
+                            <span id="chef-coins" class="text-base font-black text-amber-500">👨🍳 0</span>
+                        </div>
+                        <div class="w-0.5 h-8 bg-slate-200"></div>
+                        <div class="text-center">
+                            <span class="text-[10px] font-bold text-slate-400 block uppercase">Resep Selesai</span>
+                            <span id="chef-missions-completed" class="text-base font-black text-emerald-600">⭐ 0/4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mission Card Context -->
+                <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border-3 border-emerald-300 rounded-2xl p-4 sm:p-5 space-y-3 relative">
+                    <div class="flex items-center justify-between">
+                        <span class="px-3 py-1 bg-emerald-300 text-emerald-950 font-black text-xs rounded-full">
+                            Resep #<span id="chef-mission-num">1</span> dari 4
+                        </span>
+                        <span id="chef-object-type" class="text-xs font-bold text-emerald-900 bg-white px-3 py-1 rounded-full border border-emerald-200">
+                            🍕 Pizza Spesial
+                        </span>
+                    </div>
+
+                    <h3 id="chef-mission-title" class="text-base sm:text-lg font-black text-emerald-950 title-font">
+                        Pesanan Pizza Keju Leleh
+                    </h3>
+                    <p id="chef-mission-desc" class="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
+                        Pelanggan memesan <b>3/4 bagian Pizza Keju</b>. Potong pizza menjadi 4 bagian sama besar dan ambil 3 potong!
+                    </p>
+
+                    <!-- Target Requirements Box -->
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <div class="bg-white p-2.5 rounded-xl border border-emerald-200 text-center">
+                            <span class="text-[10px] text-slate-400 block font-bold uppercase">Target Pecahan</span>
+                            <span id="chef-target-fraction" class="text-sm sm:text-base font-black text-emerald-600">3/4</span>
+                        </div>
+                        <div class="bg-white p-2.5 rounded-xl border border-emerald-200 text-center">
+                            <span class="text-[10px] text-slate-400 block font-bold uppercase">Target Desimal</span>
+                            <span id="chef-target-decimal" class="text-sm sm:text-base font-black text-sky-600">0.75</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Recipe Controls & Canvas -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <!-- Controls Sliders (5 cols) -->
+                    <div class="lg:col-span-5 bg-emerald-50 p-4 rounded-2xl border-2 border-emerald-200 space-y-4">
+                        <span class="font-bold text-xs text-emerald-900 uppercase block border-b border-emerald-200 pb-1">
+                            Atur Potongan Resepmu:
+                        </span>
+
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between items-center text-xs font-bold text-emerald-900 mb-1">
+                                    <label>Bagian Diambil (Pembilang):</label>
+                                    <span id="chef-val-num" class="px-2 py-0.5 bg-emerald-300 text-emerald-950 font-black rounded-md">1</span>
+                                </div>
+                                <input type="range" id="chef-input-num" min="1" max="12" value="1" oninput="onChefSliderChange()" class="w-full accent-emerald-600 h-2 bg-emerald-200 rounded-lg cursor-pointer">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center text-xs font-bold text-emerald-900 mb-1">
+                                    <label>Total Potongan (Penyebut):</label>
+                                    <span id="chef-val-den" class="px-2 py-0.5 bg-emerald-300 text-emerald-950 font-black rounded-md">4</span>
+                                </div>
+                                <input type="range" id="chef-input-den" min="1" max="12" value="4" oninput="onChefSliderChange()" class="w-full accent-emerald-600 h-2 bg-emerald-200 rounded-lg cursor-pointer">
+                            </div>
+                        </div>
+
+                        <!-- Current Live Calculated Values -->
+                        <div class="bg-white p-3 rounded-xl border border-emerald-200 space-y-1 text-xs">
+                            <div class="flex justify-between font-bold">
+                                <span class="text-slate-600">Hasil Potonganmu:</span>
+                                <span id="chef-current-fraction" class="text-emerald-700 font-black">1/4</span>
+                            </div>
+                        </div>
+
+                        <!-- Verify Action Button -->
+                        <button onclick="verifyChefRecipe()" class="w-full py-3.5 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 active:scale-95 text-white font-black text-sm rounded-2xl shadow-lg border-b-4 border-teal-700 transition cursor-pointer flex items-center justify-center gap-2">
+                            <span>👩🍳</span> Sajikan Ke Pelanggan!
+                        </button>
+                    </div>
+
+                    <!-- Mini Live Preview SVG (7 cols) -->
+                    <div class="lg:col-span-7 flex flex-col items-center justify-center bg-slate-50 p-6 rounded-2xl border-2 border-slate-200 min-h-[240px] relative">
+                        <span class="text-xs font-bold text-slate-400 mb-2">Pratinjau Makanan Dapur:</span>
+                        <div id="chef-svg-preview" class="w-full h-52 flex items-center justify-center">
+                            <!-- Rendered SVG preview -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: KUIS DETEKTIF PECAHAN ================= -->
+        <section id="tab-quiz" class="tab-content hidden space-y-6 animate-popIn">
+            <div class="bg-white border-4 border-sky-300 rounded-3xl p-4 sm:p-6 shadow-xl space-y-6">
+                <!-- Header Stats -->
+                <div class="flex flex-wrap items-center justify-between gap-3 bg-sky-50 p-4 rounded-2xl border-2 border-sky-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-sky-400 text-white rounded-2xl flex items-center justify-center text-2xl font-bold shadow-md">
+                            🏆
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-sky-950 title-font">Kuis Detektif Pecahan Cilik</h2>
+                            <p class="text-xs text-slate-600">Selesaikan 10 tantangan pecahan dan dapatkan Sertifikat Juara!</p>
+                        </div>
+                    </div>
+
+                    <!-- Lives, Score & Streak -->
+                    <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-xl border border-sky-200 shadow-xs">
+                        <div class="text-center">
+                            <span class="text-[10px] font-bold text-slate-400 block uppercase">Nyawa</span>
+                            <span id="quiz-lives" class="text-sm sm:text-base font-black text-rose-500">❤️ ❤️ ❤️</span>
+                        </div>
+                        <div class="w-0.5 h-8 bg-slate-200"></div>
+                        <div class="text-center">
+                            <span class="text-[10px] font-bold text-slate-400 block uppercase">Poin</span>
+                            <span id="quiz-score" class="text-sm sm:text-base font-black text-amber-600">⭐ 0</span>
+                        </div>
+                        <div class="w-0.5 h-8 bg-slate-200"></div>
+                        <div class="text-center">
+                            <span class="text-[10px] font-bold text-slate-400 block uppercase">Combo Streak</span>
+                            <span id="quiz-streak" class="text-sm sm:text-base font-black text-purple-600">🔥 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Start / Question Container -->
+                <div id="quiz-main-container">
+                    <!-- Quiz Start Screen -->
+                    <div id="quiz-start-screen" class="bg-sky-50 p-6 sm:p-8 rounded-2xl border-2 border-sky-200 text-center space-y-4">
+                        <div class="w-20 h-20 bg-sky-200 text-sky-900 rounded-full flex items-center justify-center text-4xl mx-auto border-2 border-sky-400 animate-bounceSoft">
+                            🦉
+                        </div>
+                        <h3 class="text-xl font-black text-sky-950 title-font">Siap Uji Keahlian Pecahanmu?</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 max-w-md mx-auto font-medium">
+                            Kamu akan menghadapi 10 soal bervariasi seputar penjumlahan, pengurangan, penyederhanaan, dan soal cerita pecahan Kelas 5 SD!
+                        </p>
+                        <button onclick="startQuiz()" class="py-3.5 px-8 bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-500 hover:to-blue-600 active:scale-95 text-white font-black text-base rounded-2xl shadow-lg border-b-4 border-blue-700 transition cursor-pointer">
+                            🚀 Mulai Kuis Petualangan!
+                        </button>
+                    </div>
+
+                    <!-- Question Active Box -->
+                    <div id="quiz-question-box" class="hidden space-y-5">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-500 bg-slate-100 p-3 rounded-xl border border-slate-200">
+                            <span id="quiz-question-number">Soal 1 dari 10</span>
+                            <span id="quiz-category-tag" class="px-2.5 py-0.5 bg-sky-200 text-sky-900 rounded-md">Soal Cerita</span>
+                        </div>
+
+                        <h3 id="quiz-question-text" class="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                            Ibu membeli 1/2 kg gula dan 1/4 kg tepung. Berapakah total berat belanjaan Ibu?
+                        </h3>
+
+                        <!-- Answer Options Container -->
+                        <div id="quiz-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <!-- Feedback Message Box -->
+                        <div id="quiz-feedback" class="hidden p-4 rounded-xl border-2 text-xs sm:text-sm font-semibold flex items-start gap-3">
+                            <span id="quiz-feedback-icon" class="text-2xl shrink-0">🌟</span>
+                            <div id="quiz-feedback-text">Penjelasan jawaban akan muncul di sini.</div>
+                        </div>
+
+                        <!-- Next Button -->
+                        <div class="flex justify-end pt-2">
+                            <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden py-3 px-6 bg-sky-500 hover:bg-sky-600 text-white font-black text-xs sm:text-sm rounded-xl shadow-md transition cursor-pointer flex items-center gap-2">
+                                <span>Lanjut Soal Berikutnya</span> ➔
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: KAMUS RUMUS & TRIK CEPAT ================= -->
+        <section id="tab-dictionary" class="tab-content hidden space-y-6 animate-popIn">
+            <div class="bg-white border-4 border-purple-300 rounded-3xl p-4 sm:p-6 shadow-xl space-y-6">
+                <div class="flex items-center gap-3 bg-purple-50 p-4 rounded-2xl border-2 border-purple-200">
+                    <div class="w-12 h-12 bg-purple-400 text-white rounded-2xl flex items-center justify-center text-2xl font-bold shadow-md">
+                        📚
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-purple-950 title-font">Kamus Rumus & Trik Cepat Pecahan</h2>
+                        <p class="text-xs text-slate-600">Ringkasan materi utama matematika pecahan SD Kelas 5 terlengkap!</p>
+                    </div>
+                </div>
+
+                <!-- Formula Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- Card 1: Penjumlahan & Pengurangan Beda Penyebut -->
+                    <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-amber-950 text-base title-font flex items-center gap-1.5">
+                                <span>➕</span> Penjumlahan & Pengurangan
+                            </h3>
+                            <span class="text-[10px] bg-amber-200 text-amber-900 font-extrabold px-2 py-0.5 rounded-full">Gunakan KPK</span>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed font-medium">
+                            Jika penyebutnya <b>berbeda</b>, cari dulu <b>KPK</b> dari penyebutnya untuk menyamakannya, baru pembilangnya dijumlahkan atau dikurangi!
+                        </p>
+                        <div class="bg-white p-2.5 rounded-xl border border-amber-200 text-xs font-mono font-bold text-amber-900">
+                            1/2 + 1/3 ➔ KPK(2,3)=6 ➔ 3/6 + 2/6 = 5/6
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Perkalian Pecahan -->
+                    <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-emerald-950 text-base title-font flex items-center gap-1.5">
+                                <span>✖️</span> Perkalian Pecahan
+                            </h3>
+                            <span class="text-[10px] bg-emerald-200 text-emerald-900 font-extrabold px-2 py-0.5 rounded-full">Atas×Atas, Bawah×Bawah</span>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed font-medium">
+                            Perkalian pecahan sangat mudah! Cukup kalikan <b>Pembilang × Pembilang</b> dan <b>Penyebut × Penyebut</b>.
+                        </p>
+                        <div class="bg-white p-2.5 rounded-xl border border-emerald-200 text-xs font-mono font-bold text-emerald-900">
+                            (a/b) × (c/d) = (a × c) / (b × d)
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Pembagian Pecahan -->
+                    <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-sky-950 text-base title-font flex items-center gap-1.5">
+                                <span>➗</span> Pembagian Pecahan
+                            </h3>
+                            <span class="text-[10px] bg-sky-200 text-sky-900 font-extrabold px-2 py-0.5 rounded-full">Ubah ke Kali & Balik</span>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed font-medium">
+                            Ubah tanda bagi (÷) menjadi kali (×), lalu <b>balikkan pecahan kedua</b> (pembilang jadi penyebut)!
+                        </p>
+                        <div class="bg-white p-2.5 rounded-xl border border-sky-200 text-xs font-mono font-bold text-sky-900">
+                            (a/b) ÷ (c/d) = (a/b) × (d/c)
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Konversi Desimal & Persen -->
+                    <div class="bg-purple-50 border-2 border-purple-200 rounded-2xl p-4 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-purple-950 text-base title-font flex items-center gap-1.5">
+                                <span>💯</span> Desimal & Persen
+                            </h3>
+                            <span class="text-[10px] bg-purple-200 text-purple-900 font-extrabold px-2 py-0.5 rounded-full">PerSeratus</span>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed font-medium">
+                            <b>Persen (%)</b> artinya per seratus (/100). Untuk mengubah pecahan ke persen, kalikan pecahan dengan 100%!
+                        </p>
+                        <div class="bg-white p-2.5 rounded-xl border border-purple-200 text-xs font-mono font-bold text-purple-900">
+                            3/4 = 0.75 = 75%
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Certificate Modal Popup -->
+    <div id="certificate-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white border-8 border-amber-300 rounded-3xl p-6 max-w-lg w-full text-center space-y-4 shadow-2xl relative animate-popIn">
+            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-4xl mx-auto border-2 border-amber-300">
+                🎓
+            </div>
+            <span class="text-xs font-black uppercase tracking-widest text-amber-700 block">Sertifikat Kelulusan Resmi</span>
+            <h2 class="text-2xl font-black text-amber-950 title-font">Ahli Pecahan Cilik SD</h2>
+            <p class="text-xs text-slate-600 font-medium">
+                Sertifikat ini dianugerahkan kepada Siswa Hebat Kelas 5 atas keahlian menguasai Operasi Hitung & Konversi Pecahan bersama Pak. Vo!
+            </p>
+            <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 text-xs sm:text-sm font-bold text-amber-900 space-y-1">
+                <div class="flex justify-between">
+                    <span>Total Poin Bintang:</span>
+                    <span id="cert-score-display" class="text-emerald-700 font-black">⭐ 100</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Gelar Matematika:</span>
+                    <span class="text-purple-700 font-black">Master Koki & Detektif Pecahan 🌟</span>
+                </div>
+                <div class="text-[11px] text-slate-400 font-normal pt-2 border-t border-amber-200">
+                    Diterbitkan oleh: Pak. Vo 🦉 • Matematika SD Kelas 5
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="closeCertificateModal()" class="w-full py-3 bg-amber-400 hover:bg-amber-500 text-amber-950 font-black text-xs sm:text-sm rounded-xl shadow-md transition cursor-pointer">
+                    Tutup & Main Lagi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= WEB AUDIO API SYNTHESIZER ================= */
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+        let audioEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            document.getElementById('audio-btn').textContent = audioEnabled ? '🔊' : '🔇';
+            document.getElementById('mascot-status').textContent = audioEnabled ? 'Suara Aktif!' : 'Suara Bisu';
+        }
+
+        function playSoundClick() {
+            if (!audioEnabled) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(520, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.04);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.04);
+            } catch (e) {}
+        }
+
+        function playSoundTick() {
+            if (!audioEnabled) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, now);
+                gain.gain.setValueAtTime(0.04, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.02);
+            } catch (e) {}
+        }
+
+        function playSoundCorrect() {
+            if (!audioEnabled) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                    gain.gain.setValueAtTime(0.15, now + i * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.25);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + i * 0.08);
+                    osc.stop(now + i * 0.08 + 0.25);
+                });
+            } catch (e) {}
+        }
+
+        function playSoundWrong() {
+            if (!audioEnabled) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.setValueAtTime(160, now + 0.12);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } catch (e) {}
+        }
+
+        /* ================= CONFETTI CANVAS ENGINE ================= */
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#F1C40F', '#2ECC71', '#3498DB', '#E67E22', '#9B59B6', '#E74C3C'];
+
+            for (let i = 0; i < 70; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 14,
+                    vy: (Math.random() - 0.7) * 14,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 100
+                });
+            }
+
+            let frame = 0;
+            function animateConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.3; // gravity
+                    p.life -= 1.2;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                if (frame < 90) {
+                    frame++;
+                    requestAnimationFrame(animateConfetti);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            animateConfetti();
+        }
+
+        /* ================= MATH UTILITIES (FPB & KPK) ================= */
+        function getGCD(a, b) {
+            return b === 0 ? a : getGCD(b, a % b);
+        }
+
+        function getLCM(a, b) {
+            return (a * b) / getGCD(a, b);
+        }
+
+        /* ================= TAB NAVIGATION ================= */
+        function switchTab(tabId) {
+            playSoundClick();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn py-2.5 px-3 rounded-2xl font-bold text-xs sm:text-sm title-font flex items-center justify-center gap-1.5 transition bg-slate-100 text-slate-700 hover:bg-slate-200";
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (tabId === 'tab-simulator') activeBtn.className = "tab-btn py-2.5 px-3 rounded-2xl font-bold text-xs sm:text-sm title-font flex items-center justify-center gap-1.5 transition bg-amber-400 text-amber-950 shadow-md";
+            if (tabId === 'tab-chef') activeBtn.className = "tab-btn py-2.5 px-3 rounded-2xl font-bold text-xs sm:text-sm title-font flex items-center justify-center gap-1.5 transition bg-emerald-400 text-emerald-950 shadow-md";
+            if (tabId === 'tab-quiz') activeBtn.className = "tab-btn py-2.5 px-3 rounded-2xl font-bold text-xs sm:text-sm title-font flex items-center justify-center gap-1.5 transition bg-sky-400 text-sky-950 shadow-md";
+            if (tabId === 'tab-dictionary') activeBtn.className = "tab-btn py-2.5 px-3 rounded-2xl font-bold text-xs sm:text-sm title-font flex items-center justify-center gap-1.5 transition bg-purple-400 text-purple-950 shadow-md";
+        }
+
+        /* ================= TAB 1: VISUAL SIMULATOR ENGINE ================= */
+        let simMode = 'single'; // 'single' or 'operation'
+        let visualShape = 'pizza'; // 'pizza' or 'bar'
+
+        function setSimMode(mode) {
+            playSoundClick();
+            simMode = mode;
+            const singlePanel = document.getElementById('single-fraction-panel');
+            const opPanel = document.getElementById('operation-fraction-panel');
+            const btnSingle = document.getElementById('mode-btn-single');
+            const btnOp = document.getElementById('mode-btn-operation');
+
+            if (mode === 'single') {
+                singlePanel.classList.remove('hidden');
+                opPanel.classList.add('hidden');
+                btnSingle.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition bg-amber-400 text-amber-950 shadow-xs";
+                btnOp.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:bg-amber-100";
+                renderSingleFraction();
+            } else {
+                singlePanel.classList.add('hidden');
+                opPanel.classList.remove('hidden');
+                btnOp.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition bg-amber-400 text-amber-950 shadow-xs";
+                btnSingle.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:bg-amber-100";
+                renderOperation();
+            }
+        }
+
+        function setVisualShape(shape) {
+            playSoundClick();
+            visualShape = shape;
+            document.getElementById('shape-btn-pizza').className = shape === 'pizza' ? "py-2 px-3 rounded-xl border-2 font-bold text-xs flex items-center justify-center gap-1 bg-amber-400 border-amber-500 text-amber-950" : "py-2 px-3 rounded-xl border-2 font-bold text-xs flex items-center justify-center gap-1 bg-white border-slate-200 text-slate-700";
+            document.getElementById('shape-btn-bar').className = shape === 'bar' ? "py-2 px-3 rounded-xl border-2 font-bold text-xs flex items-center justify-center gap-1 bg-amber-400 border-amber-500 text-amber-950" : "py-2 px-3 rounded-xl border-2 font-bold text-xs flex items-center justify-center gap-1 bg-white border-slate-200 text-slate-700";
+            renderSingleFraction();
+        }
+
+        function onSingleSliderChange() {
+            playSoundTick();
+            const num = parseInt(document.getElementById('input-num').value);
+            const den = parseInt(document.getElementById('input-den').value);
+            document.getElementById('val-display-num').textContent = num;
+            document.getElementById('val-display-den').textContent = den;
+            renderSingleFraction();
+        }
+
+        function renderSingleFraction() {
+            const num = parseInt(document.getElementById('input-num').value);
+            const den = parseInt(document.getElementById('input-den').value);
+            const wrapper = document.getElementById('single-svg-wrapper');
+
+            // Type badge
+            const badge = document.getElementById('fraction-type-badge');
+            if (num < den) badge.textContent = 'Pecahan Biasa (Murni)';
+            else if (num === den) badge.textContent = 'Utuh (Sama Dengan 1)';
+            else badge.textContent = 'Pecahan Tidak Murni (> 1)';
+
+            // Render SVG (Pizza or Bar)
+            const viewW = 240;
+            const viewH = 200;
+            const cx = viewW / 2;
+            const cy = viewH / 2;
+
+            let svgContent = '';
+
+            if (visualShape === 'pizza') {
+                const r = 75;
+                let slicesSvg = '';
+
+                for (let i = 0; i < den; i++) {
+                    const startAngle = (i * 360 / den) - 90;
+                    const endAngle = ((i + 1) * 360 / den) - 90;
+
+                    const x1 = cx + r * Math.cos(Math.PI * startAngle / 180);
+                    const y1 = cy + r * Math.sin(Math.PI * startAngle / 180);
+                    const x2 = cx + r * Math.cos(Math.PI * endAngle / 180);
+                    const y2 = cy + r * Math.sin(Math.PI * endAngle / 180);
+
+                    const largeArc = (360 / den) > 180 ? 1 : 0;
+                    const fillCol = (i < num) ? '#FFB74D' : '#FFF3E0';
+                    const strokeCol = '#E65100';
+
+                    const pathData = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+                    slicesSvg += `<path d="${pathData}" fill="${fillCol}" stroke="${strokeCol}" stroke-width="2.5"/>`;
+
+                    // Add Pepperoni topping icon if filled
+                    if (i < num && den <= 12) {
+                        const midAngle = (startAngle + endAngle) / 2;
+                        const topX = cx + (r * 0.6) * Math.cos(Math.PI * midAngle / 180);
+                        const topY = cy + (r * 0.6) * Math.sin(Math.PI * midAngle / 180);
+                        slicesSvg += `<circle cx="${topX}" cy="${topY}" r="5" fill="#D84315"/>`;
+                    }
+                }
+
+                svgContent = `
+                    <circle cx="${cx}" cy="${cy}" r="${r + 4}" fill="#FFE0B2" stroke="#FB8C00" stroke-width="3"/>
+                    ${slicesSvg}
+                    <text x="${cx}" y="${cy + r + 20}" text-anchor="middle" font-weight="extrabold" font-size="14" fill="#E65100">${num} / ${den} Bagian Pizza</text>
+                `;
+            } else {
+                // Chocolate Bar
+                const bw = 180;
+                const bh = 70;
+                const bx = cx - bw / 2;
+                const by = cy - bh / 2;
+                const cellW = bw / den;
+
+                let cellsSvg = '';
+                for (let i = 0; i < den; i++) {
+                    const fillCol = (i < num) ? '#8D6E63' : '#D7CCC8';
+                    const strokeCol = '#4E342E';
+                    cellsSvg += `<rect x="${bx + i * cellW}" y="${by}" width="${cellW}" height="${bh}" fill="${fillCol}" stroke="${strokeCol}" stroke-width="2" rx="3"/>`;
+                }
+
+                svgContent = `
+                    <rect x="${bx - 4}" y="${by - 4}" width="${bw + 8}" height="${bh + 8}" fill="#5D4037" rx="6"/>
+                    ${cellsSvg}
+                    <text x="${cx}" y="${cy + bh / 2 + 22}" text-anchor="middle" font-weight="extrabold" font-size="14" fill="#4E342E">${num} / ${den} Potong Cokelat</text>
+                `;
+            }
+
+            wrapper.innerHTML = `<svg width="${viewW}" height="${viewH}" viewBox="0 0 ${viewW} ${viewH}">${svgContent}</svg>`;
+
+            // Update Conversions
+            const gcd = getGCD(num, den);
+            const simpNum = num / gcd;
+            const simpDen = den / gcd;
+            document.getElementById('calc-simplified').textContent = `${simpNum}/${simpDen}`;
+
+            const whole = Math.floor(num / den);
+            const rem = num % den;
+            document.getElementById('calc-mixed').textContent = rem === 0 ? `${whole}` : (whole > 0 ? `${whole} ${rem}/${den}` : `${num}/${den}`);
+
+            const decVal = (num / den).toFixed(2);
+            document.getElementById('calc-decimal').textContent = decVal;
+
+            const percVal = Math.round((num / den) * 100);
+            document.getElementById('calc-percent').textContent = `${percVal}%`;
+        }
+
+        function renderOperation() {
+            const n1 = parseInt(document.getElementById('op-num1').value) || 1;
+            const d1 = parseInt(document.getElementById('op-den1').value) || 2;
+            const n2 = parseInt(document.getElementById('op-num2').value) || 1;
+            const d2 = parseInt(document.getElementById('op-den2').value) || 3;
+            const op = document.getElementById('op-type').value;
+
+            document.getElementById('op-n1-val').textContent = n1;
+            document.getElementById('op-d1-val').textContent = d1;
+            document.getElementById('op-n2-val').textContent = n2;
+            document.getElementById('op-d2-val').textContent = d2;
+
+            const lcm = getLCM(d1, d2);
+            const newN1 = n1 * (lcm / d1);
+            const newN2 = n2 * (lcm / d2);
+
+            let resN = (op === '+') ? (newN1 + newN2) : (newN1 - newN2);
+            const isNegative = resN < 0;
+
+            const gcd = getGCD(Math.abs(resN), lcm);
+            const simpN = resN / gcd;
+            const simpD = lcm / gcd;
+
+            const stepsBox = document.getElementById('operation-steps-box');
+
+            stepsBox.innerHTML = `
+                <div><strong class="text-amber-400">Soal:</strong> ${n1}/${d1} ${op} ${n2}/${d2}</div>
+                <div><strong class="text-sky-400">Langkah 1 (Cari KPK Penyebut):</strong> KPK dari ${d1} dan ${d2} adalah <span class="text-amber-300 font-bold">${lcm}</span></div>
+                <div><strong class="text-sky-400">Langkah 2 (Samakan Penyebut):</strong></div>
+                <div class="pl-3 text-slate-300">• Pecahan 1: (${n1} × ${lcm / d1}) / ${lcm} = <span class="text-emerald-300 font-bold">${newN1}/${lcm}</span></div>
+                <div class="pl-3 text-slate-300">• Pecahan 2: (${n2} × ${lcm / d2}) / ${lcm} = <span class="text-emerald-300 font-bold">${newN2}/${lcm}</span></div>
+                <div><strong class="text-sky-400">Langkah 3 (Hitung Pembilang):</strong> ${newN1}/${lcm} ${op} ${newN2}/${lcm} = <span class="text-amber-300 font-bold">${resN}/${lcm}</span></div>
+                <hr class="border-slate-800 my-1"/>
+                <div class="text-base font-bold text-emerald-400">➔ Hasil Akhir (Sederhana): ${resN}/${lcm} ${gcd > 1 ? `= ${simpN}/${simpD}` : ''}</div>
+            `;
+        }
+
+        /* ================= TAB 2: CHEF GAME LOGIC ================= */
+        const chefMissions = [
+            { id: 1, title: "Pizza Keju Leleh", object: "🍕 Pizza Keju", desc: "Pelanggan memesan <b>3/4 bagian Pizza</b>. Tentukan potongan yang pas!", targetNum: 3, targetDen: 4 },
+            { id: 2, title: "Cokelat Sahabat", object: "🍫 Cokelat Susu", desc: "Bagikan cokelat dengan porsi <b>2/5 bagian</b>!", targetNum: 2, targetDen: 5 },
+            { id: 3, title: "Kue Tart Ulang Tahun", object: "🎂 Kue Tart", desc: "Potong kue ulang tahun sebesar <b>5/8 bagian</b>!", targetNum: 5, targetDen: 8 },
+            { id: 4, title: "Roti Tawar Serat", object: "🍞 Roti Tawar", desc: "Siapkan roti tawar sebesar <b>1/2 bagian</b> utuh!", targetNum: 1, targetDen: 2 }
+        ];
+
+        let chefState = {
+            currentIdx: 0,
+            coins: 0,
+            completed: 0
+        };
+
+        function loadChefMission() {
+            const m = chefMissions[chefState.currentIdx];
+            document.getElementById('chef-mission-num').textContent = m.id;
+            document.getElementById('chef-object-type').textContent = m.object;
+            document.getElementById('chef-mission-title').textContent = m.title;
+            document.getElementById('chef-mission-desc').innerHTML = m.desc;
+
+            document.getElementById('chef-target-fraction').textContent = `${m.targetNum}/${m.targetDen}`;
+            document.getElementById('chef-target-decimal').textContent = (m.targetNum / m.targetDen).toFixed(2);
+
+            document.getElementById('chef-input-num').value = 1;
+            document.getElementById('chef-input-den').value = m.targetDen;
+
+            onChefSliderChange();
+        }
+
+        function onChefSliderChange() {
+            playSoundTick();
+            const num = parseInt(document.getElementById('chef-input-num').value);
+            const den = parseInt(document.getElementById('chef-input-den').value);
+
+            document.getElementById('chef-val-num').textContent = num;
+            document.getElementById('chef-val-den').textContent = den;
+
+            document.getElementById('chef-current-fraction').textContent = `${num}/${den}`;
+
+            // Mini SVG Preview
+            const previewWrapper = document.getElementById('chef-svg-preview');
+            const viewW = 200;
+            const viewH = 160;
+            const cx = viewW / 2;
+            const cy = viewH / 2;
+            const r = 60;
+
+            let slicesSvg = '';
+            for (let i = 0; i < den; i++) {
+                const startAngle = (i * 360 / den) - 90;
+                const endAngle = ((i + 1) * 360 / den) - 90;
+
+                const x1 = cx + r * Math.cos(Math.PI * startAngle / 180);
+                const y1 = cy + r * Math.sin(Math.PI * startAngle / 180);
+                const x2 = cx + r * Math.cos(Math.PI * endAngle / 180);
+                const y2 = cy + r * Math.sin(Math.PI * endAngle / 180);
+
+                const largeArc = (360 / den) > 180 ? 1 : 0;
+                const fillCol = (i < num) ? '#2ECC71' : '#E8F8F5';
+                slicesSvg += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z" fill="${fillCol}" stroke="#27AE60" stroke-width="2"/>`;
+            }
+
+            previewWrapper.innerHTML = `
+                <svg width="${viewW}" height="${viewH}" viewBox="0 0 ${viewW} ${viewH}">
+                    <circle cx="${cx}" cy="${cy}" r="${r + 3}" fill="#A3E4D7" stroke="#27AE60" stroke-width="3"/>
+                    ${slicesSvg}
+                </svg>
+            `;
+        }
+
+        function verifyChefRecipe() {
+            const m = chefMissions[chefState.currentIdx];
+            const num = parseInt(document.getElementById('chef-input-num').value);
+            const den = parseInt(document.getElementById('chef-input-den').value);
+
+            const userVal = num / den;
+            const targetVal = m.targetNum / m.targetDen;
+
+            if (Math.abs(userVal - targetVal) < 0.001) {
+                playSoundCorrect();
+                triggerConfetti();
+                chefState.coins += 50;
+                chefState.completed += 1;
+
+                document.getElementById('chef-coins').textContent = `👨🍳 ${chefState.coins}`;
+                document.getElementById('chef-missions-completed').textContent = `⭐ ${chefState.completed}/4`;
+
+                alert(`🎉 LUAR BIASA! Resep ${m.title} BERHASIL DISAJIKAN KEPADA PELANGGAN! (+50 Topi Koki)`);
+
+                if (chefState.currentIdx < chefMissions.length - 1) {
+                    chefState.currentIdx++;
+                    loadChefMission();
+                } else {
+                    alert("🏆 SELAMAT! Kamu telah menyelesaikan SELURUH RESEP DAPUR KOKI PECAHAN!");
+                }
+            } else {
+                playSoundWrong();
+                alert(`Waduh! Porsi pecahanmu (${num}/${den}) belum sama dengan pesanan (${m.targetNum}/${m.targetDen}). Coba atur slidernya lagi ya!`);
+            }
+        }
+
+        /* ================= TAB 3: QUIZ ENGINE ================= */
+        const quizQuestions = [
+            {
+                q: "Ibu membeli 1/2 kg gula dan 1/4 kg tepung terigu. Berapakah total berat belanjaan Ibu seluruhnya?",
+                options: ["2/6 kg", "3/4 kg", "2/4 kg", "1/8 kg"],
+                answer: 1,
+                exp: "1/2 + 1/4 = 2/4 + 1/4 = 3/4 kg!"
+            },
+            {
+                q: "Bentuk pecahan paling sederhana dari 6/8 adalah...",
+                options: ["3/4", "2/3", "1/2", "3/8"],
+                answer: 0,
+                exp: "Bagi pembilang dan penyebut dengan FPB-nya (2): 6÷2 = 3, 8÷2 = 4 ➔ 3/4!"
+            },
+            {
+                q: "Ubah pecahan 3/5 menjadi bentuk desimal!",
+                options: ["0.35", "0.5", "0.6", "0.15"],
+                answer: 2,
+                exp: "3/5 = (3×2)/(5×2) = 6/10 = 0.6!"
+            },
+            {
+                q: "Hasil dari 2/3 - 1/2 adalah...",
+                options: ["1/1", "1/6", "1/5", "2/6"],
+                answer: 1,
+                exp: "KPK dari 3 dan 2 adalah 6 ➔ 4/6 - 3/6 = 1/6!"
+            },
+            {
+                q: "Pernyataan yang tepat di bawah ini adalah...",
+                options: ["1/2 < 1/4", "3/4 > 1/2", "2/5 = 1/2", "1/3 > 1/2"],
+                answer: 1,
+                exp: "3/4 (0.75) lebih besar daripada 1/2 (0.50)!"
+            },
+            {
+                q: "Bentuk persen (%) dari pecahan 3/4 adalah...",
+                options: ["25%", "50%", "75%", "30%"],
+                answer: 2,
+                exp: "3/4 × 100% = 300% / 4 = 75%!"
+            },
+            {
+                q: "Hasil dari 3/4 × 2/5 adalah...",
+                options: ["5/9", "6/20", "6/9", "3/10"],
+                answer: 1, // 6/20
+                exp: "Atas × Atas, Bawah × Bawah = (3×2) / (4×5) = 6/20 (atau disederhanakan 3/10)!"
+            },
+            {
+                q: "Ibu memiliki 1 pizza utuh. Adik memakan 2/8 bagian. Berapa bagian sisa pizza tersebut?",
+                options: ["6/8 bagian", "2/8 bagian", "1/8 bagian", "4/8 bagian"],
+                answer: 0,
+                exp: "1 utuh = 8/8 ➔ 8/8 - 2/8 = 6/8 bagian!"
+            },
+            {
+                q: "Bentuk pecahan campuran dari 7/3 adalah...",
+                options: ["2 1/3", "1 4/3", "3 1/2", "2 2/3"],
+                answer: 0,
+                exp: "7 ÷ 3 = 2 sisa 1 ➔ 2 1/3!"
+            },
+            {
+                q: "KPK dari penyebut pecahan 1/4 dan 1/6 adalah...",
+                options: ["10", "12", "24", "8"],
+                answer: 1,
+                exp: "KPK(4, 6) = 12!"
+            }
+        ];
+
+        let quizState = {
+            index: 0,
+            score: 0,
+            lives: 3,
+            streak: 0
+        };
+
+        function startQuiz() {
+            playSoundClick();
+            quizState.index = 0;
+            quizState.score = 0;
+            quizState.lives = 3;
+            quizState.streak = 0;
+
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-question-box').classList.remove('hidden');
+
+            updateQuizHeader();
+            loadQuizQuestion();
+        }
+
+        function updateQuizHeader() {
+            let hearts = '';
+            for (let i = 0; i < quizState.lives; i++) hearts += '❤️ ';
+            document.getElementById('quiz-lives').textContent = hearts || '💀 Habis';
+            document.getElementById('quiz-score').textContent = `⭐ ${quizState.score}`;
+            document.getElementById('quiz-streak').textContent = `🔥 ${quizState.streak}`;
+        }
+
+        function loadQuizQuestion() {
+            const q = quizQuestions[quizState.index];
+            document.getElementById('quiz-question-number').textContent = `Soal ${quizState.index + 1} dari ${quizQuestions.length}`;
+            document.getElementById('quiz-question-text').textContent = q.q;
+
+            const mcContainer = document.getElementById('quiz-options-container');
+            const feedbackEl = document.getElementById('quiz-feedback');
+
+            feedbackEl.classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+
+            mcContainer.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "p-3.5 bg-white border-2 border-slate-200 hover:border-amber-400 hover:bg-amber-50 rounded-xl font-bold text-sm text-slate-800 transition text-left cursor-pointer active:scale-95";
+                btn.innerHTML = `<span class="inline-block w-6 h-6 rounded-full bg-slate-100 text-center text-xs leading-6 mr-2">${String.fromCharCode(65 + idx)}</span> ${opt}`;
+                btn.onclick = () => checkMCQuizAnswer(idx);
+                mcContainer.appendChild(btn);
+            });
+        }
+
+        function checkMCQuizAnswer(selectedIdx) {
+            const q = quizQuestions[quizState.index];
+            document.querySelectorAll('#quiz-options-container button').forEach(b => b.disabled = true);
+
+            const isCorrect = selectedIdx === q.answer;
+            const feedbackEl = document.getElementById('quiz-feedback');
+            const feedbackText = document.getElementById('quiz-feedback-text');
+            const feedbackIcon = document.getElementById('quiz-feedback-icon');
+
+            if (isCorrect) {
+                playSoundCorrect();
+                quizState.streak++;
+                quizState.score += 10 + (quizState.streak * 2);
+                feedbackEl.className = "p-4 rounded-xl border-2 bg-emerald-100 border-emerald-300 text-emerald-950 font-semibold flex items-start gap-3";
+                feedbackIcon.textContent = '🌟';
+                feedbackText.innerHTML = `<strong>HEBAT SEKALI!</strong> Jawabanmu Tepat!<br><span class="text-xs text-emerald-800">${q.exp}</span>`;
+            } else {
+                playSoundWrong();
+                quizState.lives--;
+                quizState.streak = 0;
+                feedbackEl.className = "p-4 rounded-xl border-2 bg-rose-100 border-rose-300 text-rose-950 font-semibold flex items-start gap-3";
+                feedbackIcon.textContent = '💡';
+                feedbackText.innerHTML = `<strong>HAMPIR TEPAT!</strong><br><span class="text-xs text-rose-800">${q.exp}</span>`;
+            }
+
+            updateQuizHeader();
+            feedbackEl.classList.remove('hidden');
+            document.getElementById('quiz-next-btn').classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            playSoundClick();
+            if (quizState.lives <= 0) {
+                alert("Nyawa kesempatanmu habis! Mari pelajari lagi materi pecahan di Simulator!");
+                document.getElementById('quiz-question-box').classList.add('hidden');
+                document.getElementById('quiz-start-screen').classList.remove('hidden');
+                return;
+            }
+
+            quizState.index++;
+            if (quizState.index >= quizQuestions.length) {
+                playSoundCorrect();
+                triggerConfetti();
+                document.getElementById('cert-score-display').textContent = `⭐ ${quizState.score}`;
+                document.getElementById('certificate-modal').classList.remove('hidden');
+            } else {
+                loadQuizQuestion();
+            }
+        }
+
+        function closeCertificateModal() {
+            playSoundClick();
+            document.getElementById('certificate-modal').classList.add('hidden');
+            document.getElementById('quiz-question-box').classList.add('hidden');
+            document.getElementById('quiz-start-screen').classList.remove('hidden');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSingleFraction();
+            loadChefMission();
+        });
+    </script>
+</body>
+</html>
